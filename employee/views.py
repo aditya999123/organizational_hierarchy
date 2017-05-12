@@ -40,6 +40,7 @@ def main(request):
 				while manager_tmp.manager:
 					if manager_tmp.manager==employee:
 						flag=False
+						break
 					manager_tmp=manager_tmp.manager
 
 				if flag==True:
