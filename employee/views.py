@@ -33,8 +33,31 @@ def main(request):
 
 		try:
 			employee=employee_data.objects.get(email=form_email)
-			response['success']=False
-			response['message']="email already registered"
+			try:
+				manager=employee_data.objects.get(email=form_manager_email)
+				flag=True
+				manager_tmp=manager
+				while manager_tmp.manager:
+					if manager_tmp.manager==employee:
+						flag=False
+					manager_tmp=manager_tmp.manager
+
+				if flag==True:
+					response['success']=True
+					response['message']="updated"
+					employee.manager=manager
+					employee.save()
+					response['employee_name']=employee.name
+					response['employee_manager_email']=employee.manager.email
+					response['employee_manager_name']=employee.manager.name
+				else:
+					response['success']=False
+					response['message']="pls check the data looping condition"
+			except ObjectDoesNotExist:
+				response['success']=False
+				response['message']="manager not found"
+			
+			#response['message']="email already registered"
 		except:
 			try: 
 				manager=employee_data.objects.get(email=form_manager_email)
